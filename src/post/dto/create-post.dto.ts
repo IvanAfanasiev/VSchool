@@ -1,3 +1,5 @@
 export class CreatePostDto {
-    title:  string
+    title:      string
+    author_id:  number
+    content:    string
 }

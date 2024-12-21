@@ -19,6 +19,26 @@ export class PostService {
       where:{
         deleted_at: null
       },
+      include: {
+        _count:{
+          select:{
+            comments: true
+          }
+        },
+        comments: {
+          take: 1,
+          include:{
+            _count:{
+              select:{
+                likes: true
+              }
+            }
+          },
+          orderBy: {
+            created_at: 'desc',
+          },
+        },
+      },
       orderBy:{
         created_at: 'desc'
       }
@@ -31,8 +51,20 @@ export class PostService {
         id: id
       },
       include: {
+        _count:{
+          select:{
+            comments: true
+          }
+        },
         comments: {
           take: 1,
+          include:{
+            _count:{
+              select:{
+                likes: true
+              }
+            }
+          },
           orderBy: {
             created_at: 'desc',
           },

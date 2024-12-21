@@ -36,7 +36,7 @@ model Post{
   title           String
   content         String?
   created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  updated_at      DateTime?         @updatedAt
   deleted_at      DateTime?         
   // filter_year     DateTime?        
   // filter_course   String?       
@@ -52,7 +52,7 @@ model Comment{
   text            String
 
   created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  updated_at      DateTime?         @updatedAt
   deleted_at      DateTime?         
 
   likes           Comment_like[]

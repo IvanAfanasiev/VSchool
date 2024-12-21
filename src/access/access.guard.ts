@@ -16,6 +16,7 @@ export class AccessGuard implements CanActivate {
       'entity',
       [context.getHandler(), context.getClass()],
     );
+    if (!requiredAccess) return true;
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const id = request.params.id;
@@ -28,7 +29,7 @@ export class AccessGuard implements CanActivate {
   async IsOwner(requiredAccess: AccessEntity, userId: number, entityId){
     switch (requiredAccess) {
       case AccessEntity.USER:
-        break;
+        return entityId == userId ? true : false;
       case AccessEntity.POST:
         const post = await this.prisma.post.findUnique({
           where: {
@@ -38,9 +39,13 @@ export class AccessGuard implements CanActivate {
         });
         return post ? true : false;
       case AccessEntity.COMMENT:
-        break;
-      case AccessEntity.COMMENT_LIKE:
-        break;
+        const comment = await this.prisma.comment.findUnique({
+          where: {
+            id: entityId,
+            author_id: userId,
+          },
+        });
+        return comment ? true : false;
       default:
         break;
     }
