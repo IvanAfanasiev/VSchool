@@ -9,9 +9,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtStrategy } from './roles/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 import { CommentModule } from './comment/comment.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [UserModule, PostModule, AuthModule, CommentModule],
+  imports: [UserModule, PostModule, AuthModule, CommentModule, ChatModule],
   controllers: [AppController],
   providers: [
     AppService, 

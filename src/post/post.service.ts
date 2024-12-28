@@ -14,7 +14,7 @@ export class PostService {
     });
   }
 
-  async findAll() {
+  async findAll(user_id: number) {
     return await this.prisma.post.findMany({
       where:{
         deleted_at: null
@@ -22,12 +22,23 @@ export class PostService {
       include: {
         _count:{
           select:{
-            comments: true
+            comments: true,
+            likes: true
+          }
+        },
+        author: {
+          select:{
+            name: true
           }
         },
         comments: {
-          take: 1,
+          // take: 1,
           include:{
+            user: {
+              select: {
+                name: true
+              }
+            },
             _count:{
               select:{
                 likes: true
@@ -42,6 +53,24 @@ export class PostService {
       orderBy:{
         created_at: 'desc'
       }
+    }).then(async (posts) => {
+      // Обрабатываем каждый пост, добавляя `is_liked`
+      const enrichedPosts = await Promise.all(
+        posts.map(async (post) => {
+          const isLiked = await this.prisma.post_like.count({
+            where: {
+              post_id: post.id,
+              evaluator_id: user_id, // Подставьте ID текущего пользователя
+            },
+          });
+    
+          return {
+            ...post,
+            is_liked: isLiked > 0, // true, если лайк найден
+          };
+        })
+      );
+      return enrichedPosts;
     });
   }
 
