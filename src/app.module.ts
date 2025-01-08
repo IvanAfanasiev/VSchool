@@ -10,9 +10,11 @@ import { JwtStrategy } from './roles/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 import { CommentModule } from './comment/comment.module';
 import { ChatModule } from './chat/chat.module';
+import { GatewayChat } from './gateway/gateway.chat';
+import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [UserModule, PostModule, AuthModule, CommentModule, ChatModule],
+  imports: [UserModule, PostModule, AuthModule, CommentModule, ChatModule, GatewayChat, MessageModule],
   controllers: [AppController],
   providers: [
     AppService, 

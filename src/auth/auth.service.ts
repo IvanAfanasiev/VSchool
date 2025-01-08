@@ -18,7 +18,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     const payload = { id: user.id, role: user.role };
-    return {
+    return { 
       access_token: await this.jwtService.signAsync(payload),
     };
   }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Put, Response } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
@@ -27,7 +27,7 @@ export class ChatController {
 
   @UseGuards(AuthGuard)
   @Get('messages/:chatId')
-  getMessages(@Param('chatId') chat_id: string) {
+  getMessages(@Param('chatId') chat_id: string){//, @Response() res) {
     return this.chatService.getMessages(+chat_id);
   }
 

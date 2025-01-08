@@ -24,13 +24,51 @@ export class ChatService {
       },
       include:{
         messages:{
+          select:{
+            text: true,
+            created_at: true,
+            author: {
+              select:{
+                name: true,
+                role: true,
+              }
+            }
+          },
           take:1,
           orderBy:{
             created_at: 'desc'
-          }
+          },
         }
       }
     });
+  }
+
+  getMessages(chat_id: number){
+    return this.prisma.chat.findUnique({
+      where:{
+        id: chat_id,
+      },
+      select:{
+        title: true,
+        messages: {
+          where:{
+            deleted_at: null
+          },
+          take:10,
+          orderBy:{
+            created_at: 'desc'
+          },
+          include: {
+            author:{
+              select:{
+                name: true
+              }
+            }
+          }
+        }
+      },
+      
+    })
   }
 
   findOne(id: number) {
