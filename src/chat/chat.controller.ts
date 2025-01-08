@@ -25,6 +25,12 @@ export class ChatController {
     return this.chatService.findAll(req.user.id);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('messages/:chatId')
+  getMessages(@Param('chatId') chat_id: string) {
+    return this.chatService.getMessages(+chat_id);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.chatService.findOne(+id);
