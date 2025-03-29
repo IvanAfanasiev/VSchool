@@ -1,4 +1,4 @@
-<h1 align="center">VS (Virtual School)</h1> 
+<h1 align="center">Virtual School</h1> 
 <h3 align="center">A Private Social Network for Educational Institutions</h3>  
 
 Inspired by early social networks like Facebook, this platform aims to modernize communication by replacing outdated email-based announcements with a more interactive and engaging system.  
