@@ -9,7 +9,7 @@ Currently, VS provides a basic functional foundation, enabling essential interac
 <h2>Tech Stack💻</h2>
 <ul>
     <li>
-        <b>Frontend</b><br>
+        <b><a href="https://github.com/IvanAfanasiev/VSchool-front">Frontend</a></b><br>
         <ul>
             <li>React</li>
             <li>TypeScript</li>
