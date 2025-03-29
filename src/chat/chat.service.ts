@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { PrismaService } from 'src/prisma.service';
+import { contains } from 'class-validator';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class ChatService {
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private messageService: MessageService
+  ) {}
   
 
   create(dto: CreateChatDto) {
@@ -43,32 +48,44 @@ export class ChatService {
     });
   }
 
-  getMessages(chat_id: number){
-    return this.prisma.chat.findUnique({
+  async getMessages(chat_id: number, userId: number){
+    const chat = await this.prisma.chat.findUnique({
       where:{
         id: chat_id,
-      },
-      select:{
-        title: true,
-        messages: {
-          where:{
-            deleted_at: null
-          },
-          take:10,
-          orderBy:{
-            created_at: 'desc'
-          },
-          include: {
-            author:{
-              select:{
-                name: true
-              }
-            }
+        users:{
+          some: {
+            id: userId
           }
         }
       },
-      
-    })
+      select:{
+        title: true,
+        // messages: {
+        //   where:{
+        //     deleted_at: null
+        //   },
+        //   take:10,
+        //   orderBy:{
+        //     created_at: 'desc'
+        //   },
+        //   include: {
+        //     author:{
+        //       select:{
+        //         name: true
+        //       }
+        //     }
+        //   }
+        // }
+      },
+    });
+
+    if (!chat) {
+      throw new ForbiddenException('You do not have access to this chat');
+    
+    }
+    chat['messages'] = await this.messageService.findByChatId(chat_id);
+    return chat;
+
   }
 
   findOne(id: number) {

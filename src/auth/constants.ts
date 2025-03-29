@@ -1,3 +1,5 @@
-export const jwtConstants = {
-  secret: 'THE SECRET VALUE',
+export const constants = {
+  PAGINATION_BASE_PAGE: 1,
+  PAGINATION_BASE_LIMIT: 2,
+  PAGINATION_BASE_OFFSET: 0
 };

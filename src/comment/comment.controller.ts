@@ -1,14 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Request,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { AccessGuard } from 'src/access/access.guard';
 import { AccessEntity } from 'src/access/entity.acces.enum';
 import { Access } from 'src/access/access.decorator';
+import { LikeDto } from 'src/post/dto/like.dto';
 
 @Controller('comment')
-@UseGuards(AuthGuard, AccessGuard)
+@UseGuards(AuthGuard)
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
@@ -18,9 +29,14 @@ export class CommentController {
     return this.commentService.create(dto);
   }
 
-  @Get('post/')
-  findAllByPostId(@Param('id') id: string) {
-    return this.commentService.findAllByPostId(+id);
+  @Get('post/:id')
+  findAllByPostId(@Param('id') id: string, @Query('page') page: number, @Request() req) {
+    return this.commentService.findAllByPostId(+id, req.user.id, page);
+  }
+
+  @Get('post/upTo/:id')
+  findAllByPostIdUpToPage(@Param('id') id: string, @Query('page') page: number, @Request() req) {
+    return this.commentService.findAllByPostIdUpToPage(+id, req.user.id, page);
   }
 
   @Get(':id')
@@ -28,9 +44,24 @@ export class CommentController {
     return this.commentService.findOneByPostId(+id);
   }
 
+  @Post('likeComment')
+  setLike(@Body() like: LikeDto, @Request() req) {
+    like.evaluator_id = req.user.id;
+    return this.commentService.likeComment(like);
+  }
+  @Delete('likeComment')
+  deleteLike(@Body() like: LikeDto, @Request() req) {
+    like.evaluator_id = req.user.id;
+    return this.commentService.deleteLikeComment(like);
+  }
+
   @Access(AccessEntity.COMMENT)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateCommentDto, @Request() req) {
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateCommentDto,
+    @Request() req,
+  ) {
     dto.author_id = req.user.id;
     return this.commentService.update(+id, dto);
   }

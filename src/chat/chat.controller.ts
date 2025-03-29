@@ -27,14 +27,9 @@ export class ChatController {
 
   @UseGuards(AuthGuard)
   @Get('messages/:chatId')
-  getMessages(@Param('chatId') chat_id: string){//, @Response() res) {
-    return this.chatService.getMessages(+chat_id);
+  getMessages(@Param('chatId') chat_id: string, @Req() res) {
+    return this.chatService.getMessages(+chat_id, res.user.id);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.chatService.findOne(+id);
-  // }
 
   @UseGuards(AuthGuard, RolesGuard, AccessGuard)
   @Roles(Role.admin, Role.moderator)
